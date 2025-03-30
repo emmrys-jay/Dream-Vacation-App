@@ -16,18 +16,18 @@ jobs:
       # Build and push frontend image
       - run:
           name: Build Frontend Image
-          command: docker build -t $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1 ./frontend
+          command: docker build -t $DOCKERHUB_USERNAME/frontend:latest ./frontend
       - run:
           name: Push Frontend Image
-          command: docker push $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1
+          command: docker push $DOCKERHUB_USERNAME/frontend:latest
       
       # Build and push backend image
       - run:
           name: Build Backend Image
-          command: docker build -t $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1 ./backend
+          command: docker build -t $DOCKERHUB_USERNAME/backend:latest ./backend
       - run:
           name: Push Backend Image
-          command: docker push $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1
+          command: docker push $DOCKERHUB_USERNAME/backend:latest
 
 workflows:
   version: 2
