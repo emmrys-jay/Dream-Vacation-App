@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    image: emmrysjay/backend:latest
+    ports:
+      - "3001:3001"
+    restart: always
+    container_name: d-backend
+    env_file:
+      - ./backend.env
+    networks:
+      - dream_vacation_network
+
+  frontend:
+    image: emmrysjay/frontend:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    container_name: d-frontend
+    env_file:
+      - ./frontend.env
+    networks:
+      - dream_vacation_network
+
+  mysql:
+    image: mysql:8.0.41
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dreamvacations
+      # MYSQL_PASSWORD: password
+      # MYSQL_USER: user
+    container_name: d-mysql
+    networks:
+      - dream_vacation_network
+
+networks:
+  dream_vacation_network:
+    driver: bridge
