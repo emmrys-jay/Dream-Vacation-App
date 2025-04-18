@@ -8,7 +8,7 @@ services:
     restart: always
     container_name: d-backend
     env_file:
-      - ./backend.env
+      - backend.env
     networks:
       - dream_vacation_network
 
@@ -20,7 +20,7 @@ services:
       - backend
     container_name: d-frontend
     env_file:
-      - ./frontend.env
+      - frontend.env
     networks:
       - dream_vacation_network
 
