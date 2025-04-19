@@ -53,7 +53,7 @@ workflows:
       - build-and-push
       - deploy-to-ec2:
           requires:
-            - build-and-push-images
+            - build-and-push
           filters:
             branches:
               only: main
