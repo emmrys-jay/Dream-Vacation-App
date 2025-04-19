@@ -29,9 +29,31 @@ jobs:
           name: Push Backend Image
           command: docker push $DOCKERHUB_USERNAME/backend:latest
 
+  deploy-to-ec2:
+    docker:
+      - image: cimg/base:2023.03
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:WcQtRXOH1y0NfS3d5D7c7ysCHubGPN72vYdQnMl7Jes" # Your SSH key fingerprint
+      - run:
+          name: Setup SSH
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+      - run:
+          name: Deploy to EC2
+          command: |
+            ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /app && ./deploy.sh $CIRCLE_SHA1"
+
 workflows:
   version: 2
-  build-deploy:
+  build-and-deploy:
     jobs:
-      - build-and-push:
-          context: dockerhub 
+      - build-and-push
+      - deploy-to-ec2:
+          requires:
+            - build-and-push-images
+          filters:
+            branches:
+              only: main
