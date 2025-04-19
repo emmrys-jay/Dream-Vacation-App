@@ -7,31 +7,46 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      
+  
       # Login to DockerHub
       - run:
           name: Docker Hub Login
           command: echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       
-      # Build and push frontend image
+      # Build and push frontend image with SHA tag
       - run:
           name: Build Frontend Image
-          command: docker build -t $DOCKERHUB_USERNAME/frontend:latest ./frontend
+          command: |
+            docker build -t $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1 ./frontend
+            docker tag $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1 $DOCKERHUB_USERNAME/frontend:latest
       - run:
           name: Push Frontend Image
-          command: docker push $DOCKERHUB_USERNAME/frontend:latest
+          command: |
+            docker push $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1
+            docker push $DOCKERHUB_USERNAME/frontend:latest
       
-      # Build and push backend image
+      # Build and push backend image with SHA tag
       - run:
           name: Build Backend Image
-          command: docker build -t $DOCKERHUB_USERNAME/backend:latest ./backend
+          command: |
+            docker build -t $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1 ./backend
+            docker tag $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1 $DOCKERHUB_USERNAME/backend:latest
       - run:
           name: Push Backend Image
-          command: docker push $DOCKERHUB_USERNAME/backend:latest
+          command: |
+            docker push $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1
+            docker push $DOCKERHUB_USERNAME/backend:latest
+            
+      # Verify images were pushed
+      - run:
+          name: Verify Docker Hub Push
+          command: |
+            docker pull $DOCKERHUB_USERNAME/frontend:$CIRCLE_SHA1
+            docker pull $DOCKERHUB_USERNAME/backend:$CIRCLE_SHA1
 
   deploy-to-ec2:
     docker:
-      - image: cimg/base:2023.03
+      - image: cimg/base:2025.03
     steps:
       - add_ssh_keys:
           fingerprints:
