@@ -42,13 +42,13 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Dream Vacation Destinations 2nd</h1>
+      <h1>Dream Vacation Destinations</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          placeholder="Enter a country"
+          placeholder="Enter a country in here"
           required
         />
         <button type="submit">Add Destination</button>
