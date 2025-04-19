@@ -44,6 +44,7 @@ jobs:
       - run:
           name: Deploy to EC2
           command: |
+            set -e
             ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd app && ./deploy.sh $CIRCLE_SHA1"
 
 workflows:
